@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ALEIX PERDIGÓ — LINKS</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root{
+    --bg:#000; --fg:#fff; --dim:#666; --line:#222;
+  }
+  html,body{ background:var(--bg); color:var(--fg); }
+  body{
+    font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    display:flex; flex-direction:column;
+    padding:clamp(24px,6vw,72px);
+  }
+
+  /* ---- header ---- */
+  header{ border-bottom:2px solid var(--fg); padding-bottom:22px; margin-bottom:8px; }
+  .name{
+    font-size:clamp(34px,9vw,88px);
+    font-weight:800; line-height:.92;
+    letter-spacing:-.03em; text-transform:uppercase;
+  }
+  .sub{
+    display:flex; justify-content:space-between; align-items:baseline;
+    flex-wrap:wrap; gap:8px 24px; margin-top:16px;
+    font-size:12px; letter-spacing:.22em; text-transform:uppercase; color:var(--dim);
+    font-family:"SF Mono",ui-monospace,Menlo,monospace;
+  }
+
+  /* ---- list ---- */
+  nav{ flex:1; }
+  .row{
+    display:grid; grid-template-columns:auto 1fr auto; align-items:center;
+    gap:clamp(14px,4vw,40px);
+    padding:clamp(20px,3.4vw,34px) 4px;
+    border-bottom:1px solid var(--line);
+    color:var(--fg); text-decoration:none;
+    position:relative; overflow:hidden;
+    transition:padding .18s ease, color .18s ease;
+  }
+  .row::before{
+    content:""; position:absolute; inset:0; background:var(--fg);
+    transform:translateX(-101%); transition:transform .28s cubic-bezier(.2,.7,.2,1); z-index:0;
+  }
+  .row:hover::before,.row:focus-visible::before{ transform:translateX(0); }
+  .row:hover,.row:focus-visible{ color:var(--bg); padding-left:clamp(14px,3vw,28px); outline:none; }
+  .row > *{ position:relative; z-index:1; }
+
+  .idx{
+    font-family:"SF Mono",ui-monospace,Menlo,monospace;
+    font-size:13px; color:var(--dim); letter-spacing:.05em;
+  }
+  .row:hover .idx,.row:focus-visible .idx{ color:var(--bg); }
+
+  .mid{ min-width:0; }
+  .title{
+    font-size:clamp(21px,4.4vw,40px); font-weight:800;
+    letter-spacing:-.02em; text-transform:uppercase; line-height:1;
+  }
+  .url{
+    display:block; margin-top:9px;
+    font-family:"SF Mono",ui-monospace,Menlo,monospace;
+    font-size:12px; color:var(--dim); letter-spacing:.02em;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .row:hover .url,.row:focus-visible .url{ color:var(--bg); }
+
+  .arrow{ font-size:clamp(22px,5vw,40px); font-weight:800; line-height:1; transform:translateX(0); transition:transform .22s ease; }
+  .row:hover .arrow,.row:focus-visible .arrow{ transform:translateX(6px); }
+
+  .tag{
+    display:inline-block; margin-left:10px; padding:2px 7px;
+    border:1px solid var(--dim); color:var(--dim);
+    font-size:10px; letter-spacing:.18em; vertical-align:middle; transform:translateY(-1px);
+  }
+  .row:hover .tag,.row:focus-visible .tag{ border-color:var(--bg); color:var(--bg); }
+
+  /* ---- footer ---- */
+  footer{
+    margin-top:26px; padding-top:20px; border-top:2px solid var(--fg);
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px 24px;
+    font-family:"SF Mono",ui-monospace,Menlo,monospace;
+    font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--dim);
+  }
+  footer a{ color:var(--dim); text-decoration:none; }
+  footer a:hover{ color:var(--fg); }
+</style>
+</head>
+<body>
+  <header>
+    <div class="name">Aleix<br>Perdigó</div>
+    <div class="sub">
+      <span>AI Artist · Content Director</span>
+      <span>Goroka · Turbo2</span>
+    </div>
+  </header>
+
+  <nav>
+    <a class="row" href="https://aleixperdigo.github.io/ai-video-references/" target="_blank" rel="noopener">
+      <span class="idx">01</span>
+      <span class="mid">
+        <span class="title">Repositorio de Vídeo IA</span>
+        <span class="url">aleixperdigo.github.io/ai-video-references</span>
+      </span>
+      <span class="arrow">↗</span>
+    </a>
+
+    <a class="row" href="https://aleixperdigo.github.io/turbo2-price-matrix/" target="_blank" rel="noopener">
+      <span class="idx">02</span>
+      <span class="mid">
+        <span class="title">AI Video Price Matrix</span>
+        <span class="url">aleixperdigo.github.io/turbo2-price-matrix</span>
+      </span>
+      <span class="arrow">↗</span>
+    </a>
+
+    <a class="row" href="https://aleixperdigo.github.io/hamsterclick/" target="_blank" rel="noopener">
+      <span class="idx">03</span>
+      <span class="mid">
+        <span class="title">HAMUSTER Clicker</span>
+        <span class="url">aleixperdigo.github.io/hamsterclick</span>
+      </span>
+      <span class="arrow">↗</span>
+    </a>
+
+    <a class="row" href="https://aleixperdigo.github.io/workflow-stack/" target="_blank" rel="noopener">
+      <span class="idx">04</span>
+      <span class="mid">
+        <span class="title">Workflow Stack</span>
+        <span class="url">aleixperdigo.github.io/workflow-stack</span>
+      </span>
+      <span class="arrow">↗</span>
+    </a>
+
+    <a class="row" href="https://aleixperdigo.github.io/" target="_blank" rel="noopener">
+      <span class="idx">05</span>
+      <span class="mid">
+        <span class="title">Portfolio 2026</span>
+        <span class="url">aleixperdigo.github.io</span>
+      </span>
+      <span class="arrow">↗</span>
+    </a>
+
+    <a class="row" href="ai-video-battle.html">
+      <span class="idx">06</span>
+      <span class="mid">
+        <span class="title">AI Video Battle</span>
+        <span class="url">ai-video-battle.html<span class="tag">LOCAL</span></span>
+      </span>
+      <span class="arrow">→</span>
+    </a>
+  </nav>
+
+  <footer>
+    <span>© 2026 Aleix Perdigó</span>
+    <a href="mailto:aleix.perdigo@goroka.tv">aleix.perdigo@goroka.tv</a>
+  </footer>
+</body>
+</html>

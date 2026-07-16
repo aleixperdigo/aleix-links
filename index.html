@@ -4,6 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ALEIX PERDIGÓ — LINKS</title>
+<script>
+/* modos alternos: cada carga invierte el modo de la anterior (no hay default) */
+(function(){
+  var last = null;
+  try { last = localStorage.getItem('ap-mode'); } catch(e){}
+  var mode = (last === 'flashy') ? 'dry' : 'flashy';
+  try { localStorage.setItem('ap-mode', mode); } catch(e){}
+  document.documentElement.setAttribute('data-mode', mode);
+})();
+</script>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root{
@@ -152,11 +162,37 @@
   .cur.big{ width:64px; height:64px; background:var(--fg); }
 
   @media (hover:hover) and (pointer:fine){
-    body,a{ cursor:none; }
+    html[data-mode="flashy"] body,
+    html[data-mode="flashy"] a,
+    html[data-mode="flashy"] button{ cursor:none; }
   }
   @media (hover:none){
     .cur{ display:none; }
   }
+
+  /* ---- modo DRY: tipografía pura, cero animación ---- */
+  html[data-mode="dry"] #bg,
+  html[data-mode="dry"] .cur{ display:none; }
+  html[data-mode="dry"] .name .line span{ transform:none; animation:none; }
+  html[data-mode="dry"] .rule{ transform:none; animation:none; }
+  html[data-mode="dry"] .row{ opacity:1; transform:none; animation:none; }
+  html[data-mode="dry"] .marquee,
+  html[data-mode="dry"] footer{ opacity:1; animation:none; }
+  html[data-mode="dry"] .mq{ animation:none; }
+  html[data-mode="dry"] .mark{ animation:none; }
+  html[data-mode="dry"] .row,
+  html[data-mode="dry"] .row::before,
+  html[data-mode="dry"] .arrow{ transition:none; }
+
+  /* ---- switcher de modo ---- */
+  .mode{
+    background:none; border:0; padding:0;
+    font-family:inherit; font-size:inherit; letter-spacing:inherit; text-transform:inherit;
+    color:var(--dim); cursor:pointer;
+  }
+  .mode:focus-visible{ outline:1px solid var(--fg); outline-offset:3px; }
+  html[data-mode="flashy"] .m-f{ color:var(--fg); }
+  html[data-mode="dry"] .m-d{ color:var(--fg); }
 
   /* ---- footer ---- */
   footer{
@@ -257,6 +293,9 @@
 
   <footer>
     <span>© 2026 Aleix Perdigó</span>
+    <button class="mode" id="modeBtn" type="button" aria-label="Cambiar entre modo flashy y modo dry">
+      <span class="m-f">Flashy</span>&nbsp;/&nbsp;<span class="m-d">Dry</span>
+    </button>
     <a href="mailto:aleixperdigo@gmail.com">aleixperdigo@gmail.com</a>
   </footer>
 
@@ -307,6 +346,11 @@
     };
 
     var frame = function(){
+      // en modo dry el canvas está oculto: no gastamos en dibujar
+      if (document.documentElement.getAttribute('data-mode') !== 'flashy'){
+        raf = requestAnimationFrame(frame);
+        return;
+      }
       // self-heal: refit if the viewport changed (covers 0-width init)
       if (Math.ceil(innerWidth / CELL) !== cols || Math.ceil(innerHeight / CELL) !== rows) fit();
       t += .016;
@@ -358,9 +402,17 @@
 
   /* ---- cursor grow on links ---- */
   var curEl = document.getElementById('cur');
-  document.querySelectorAll('.row, footer a').forEach(function(el){
+  document.querySelectorAll('.row, footer a, .mode').forEach(function(el){
     el.addEventListener('mouseenter', function(){ curEl.classList.add('big'); });
     el.addEventListener('mouseleave', function(){ curEl.classList.remove('big'); });
+  });
+
+  /* ---- switcher flashy/dry (la próxima carga alterna desde lo elegido) ---- */
+  document.getElementById('modeBtn').addEventListener('click', function(){
+    var h = document.documentElement;
+    var m = (h.getAttribute('data-mode') === 'flashy') ? 'dry' : 'flashy';
+    h.setAttribute('data-mode', m);
+    try { localStorage.setItem('ap-mode', m); } catch(e){}
   });
 })();
 </script>

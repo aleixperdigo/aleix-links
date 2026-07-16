@@ -58,7 +58,7 @@
   @keyframes rise{ to{ transform:translateY(0); } }
 
   .mark{
-    position:absolute; top:-.06em; right:0;
+    position:absolute; top:.92em; right:0;
     font-size:clamp(40px,7.5vw,74px); font-weight:800; line-height:1;
     animation:spin 26s linear infinite;
     transform-origin:50% 54%;
@@ -77,13 +77,13 @@
   .marquee{
     overflow:hidden; white-space:nowrap;
     border-bottom:1px solid var(--line);
-    padding:7px 0;
+    padding:10px 0;
     opacity:0; animation:appear .8s ease .7s forwards;
   }
   .mq{
     display:inline-block; white-space:nowrap;
-    font-size:12px; font-weight:700; letter-spacing:.24em; text-transform:uppercase;
-    color:var(--dim);
+    font-size:clamp(15px,2.2vw,22px); font-weight:800; letter-spacing:.2em; text-transform:uppercase;
+    color:var(--fg);
     animation:slide 26s linear infinite;
   }
   @keyframes slide{ to{ transform:translateX(-50%); } }
@@ -184,12 +184,16 @@
   html[data-mode="dry"] .row::before,
   html[data-mode="dry"] .arrow{ transition:none; }
 
-  /* ---- switcher de modo ---- */
+  /* ---- switcher de modo (fijo, arriba derecha) ---- */
   .mode{
-    background:none; border:0; padding:0;
-    font-family:inherit; font-size:inherit; letter-spacing:inherit; text-transform:inherit;
+    position:fixed; top:clamp(18px,3.5vw,40px); right:clamp(18px,3.5vw,40px); z-index:5;
+    background:var(--bg); border:1px solid var(--dim); padding:8px 12px;
+    font-family:"SF Mono",ui-monospace,Menlo,monospace;
+    font-size:12px; font-weight:700; letter-spacing:.18em; text-transform:uppercase;
     color:var(--dim); cursor:pointer;
+    transition:border-color .2s ease;
   }
+  .mode:hover{ border-color:var(--fg); }
   .mode:focus-visible{ outline:1px solid var(--fg); outline-offset:3px; }
   html[data-mode="flashy"] .m-f{ color:var(--fg); }
   html[data-mode="dry"] .m-d{ color:var(--fg); }
@@ -219,6 +223,10 @@
 </head>
 <body>
   <canvas id="bg" aria-hidden="true"></canvas>
+
+  <button class="mode" id="modeBtn" type="button" aria-label="Cambiar entre modo flashy y modo dry">
+    <span class="m-f">Flashy</span>&nbsp;/&nbsp;<span class="m-d">Dry</span>
+  </button>
 
   <header>
     <div class="name">
@@ -293,9 +301,6 @@
 
   <footer>
     <span>© 2026 Aleix Perdigó</span>
-    <button class="mode" id="modeBtn" type="button" aria-label="Cambiar entre modo flashy y modo dry">
-      <span class="m-f">Flashy</span>&nbsp;/&nbsp;<span class="m-d">Dry</span>
-    </button>
     <a href="mailto:aleixperdigo@gmail.com">aleixperdigo@gmail.com</a>
   </footer>
 

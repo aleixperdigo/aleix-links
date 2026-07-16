@@ -7,45 +7,102 @@
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   :root{
-    --bg:#000; --fg:#fff; --dim:#666; --line:#222;
+    --bg:#000; --fg:#fff; --dim:#8a8a8a; --line:#242424;
+    --ease:cubic-bezier(.16,1,.3,1);
   }
   html,body{ background:var(--bg); color:var(--fg); }
   body{
     font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
     -webkit-font-smoothing:antialiased;
-    min-height:100vh;
+    min-height:100vh; min-height:100dvh;
     display:flex; flex-direction:column;
-    padding:clamp(24px,6vw,72px);
+    padding:clamp(20px,5vw,64px);
+    overflow-x:hidden;
+    position:relative;
   }
 
+  /* ---- dither field (canvas) ---- */
+  #bg{
+    position:fixed; inset:0; width:100vw; height:100vh;
+    image-rendering:pixelated; z-index:0; opacity:.45;
+    pointer-events:none;
+  }
+
+  /* ---- content sits above ---- */
+  header,nav,footer,.marquee{ position:relative; z-index:1; }
+
   /* ---- header ---- */
-  header{ border-bottom:2px solid var(--fg); padding-bottom:22px; margin-bottom:8px; }
+  header{ padding-bottom:clamp(18px,3vw,28px); position:relative; }
   .name{
-    font-size:clamp(34px,9vw,88px);
-    font-weight:800; line-height:.92;
+    font-size:clamp(44px,11vw,96px);
+    font-weight:800; line-height:.9;
     letter-spacing:-.03em; text-transform:uppercase;
   }
-  .sub{
-    display:flex; justify-content:space-between; align-items:baseline;
-    flex-wrap:wrap; gap:8px 24px; margin-top:16px;
-    font-size:12px; letter-spacing:.22em; text-transform:uppercase; color:var(--dim);
-    font-family:"SF Mono",ui-monospace,Menlo,monospace;
+  .name .line{ display:block; overflow:hidden; }
+  .name .line span{
+    display:inline-block;
+    transform:translateY(112%);
+    animation:rise 1s var(--ease) forwards;
   }
+  .name .line:nth-child(2) span{ animation-delay:.09s; }
+  @keyframes rise{ to{ transform:translateY(0); } }
+
+  .mark{
+    position:absolute; top:-.06em; right:0;
+    font-size:clamp(54px,11vw,120px); font-weight:800; line-height:1;
+    animation:spin 26s linear infinite;
+    transform-origin:50% 54%;
+    user-select:none;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+
+  .rule{
+    position:absolute; left:0; right:0; bottom:0; height:2px; background:var(--fg);
+    transform:scaleX(0); transform-origin:left;
+    animation:grow 1s var(--ease) .45s forwards;
+  }
+  @keyframes grow{ to{ transform:scaleX(1); } }
+
+  /* ---- marquee ---- */
+  .marquee{
+    overflow:hidden; white-space:nowrap;
+    border-bottom:1px solid var(--line);
+    padding:12px 0;
+    opacity:0; animation:appear .8s ease .7s forwards;
+  }
+  .mq{
+    display:inline-block; white-space:nowrap;
+    font-size:12px; font-weight:700; letter-spacing:.24em; text-transform:uppercase;
+    color:var(--dim);
+    animation:slide 26s linear infinite;
+  }
+  @keyframes slide{ to{ transform:translateX(-50%); } }
+  @keyframes appear{ to{ opacity:1; } }
 
   /* ---- list ---- */
   nav{ flex:1; }
   .row{
     display:grid; grid-template-columns:auto 1fr auto; align-items:center;
     gap:clamp(14px,4vw,40px);
-    padding:clamp(20px,3.4vw,34px) 4px;
+    padding:clamp(20px,3.2vw,32px) 4px;
     border-bottom:1px solid var(--line);
     color:var(--fg); text-decoration:none;
     position:relative; overflow:hidden;
     transition:padding .18s ease, color .18s ease;
+    opacity:0; transform:translateY(26px);
+    animation:rowin .9s var(--ease) forwards;
   }
+  .row:nth-child(1){ animation-delay:.5s; }
+  .row:nth-child(2){ animation-delay:.57s; }
+  .row:nth-child(3){ animation-delay:.64s; }
+  .row:nth-child(4){ animation-delay:.71s; }
+  .row:nth-child(5){ animation-delay:.78s; }
+  .row:nth-child(6){ animation-delay:.85s; }
+  @keyframes rowin{ to{ opacity:1; transform:translateY(0); } }
+
   .row::before{
     content:""; position:absolute; inset:0; background:var(--fg);
-    transform:translateX(-101%); transition:transform .28s cubic-bezier(.2,.7,.2,1); z-index:0;
+    transform:translateX(-101%); transition:transform .3s var(--ease); z-index:0;
   }
   .row:hover::before,.row:focus-visible::before{ transform:translateX(0); }
   .row:hover,.row:focus-visible{ color:var(--bg); padding-left:clamp(14px,3vw,28px); outline:none; }
@@ -59,7 +116,7 @@
 
   .mid{ min-width:0; }
   .title{
-    font-size:clamp(21px,4.4vw,40px); font-weight:800;
+    font-size:clamp(22px,4.6vw,42px); font-weight:800;
     letter-spacing:-.02em; text-transform:uppercase; line-height:1;
   }
   .url{
@@ -70,9 +127,6 @@
   }
   .row:hover .url,.row:focus-visible .url{ color:var(--bg); }
 
-  .arrow{ font-size:clamp(22px,5vw,40px); font-weight:800; line-height:1; transform:translateX(0); transition:transform .22s ease; }
-  .row:hover .arrow,.row:focus-visible .arrow{ transform:translateX(6px); }
-
   .tag{
     display:inline-block; margin-left:10px; padding:2px 7px;
     border:1px solid var(--dim); color:var(--dim);
@@ -80,37 +134,94 @@
   }
   .row:hover .tag,.row:focus-visible .tag{ border-color:var(--bg); color:var(--bg); }
 
+  .arrow{ font-size:clamp(22px,5vw,40px); font-weight:800; line-height:1; transition:transform .25s var(--ease); }
+  .row:hover .arrow,.row:focus-visible .arrow{ transform:translate(8px,-4px); }
+  .row:hover .arrow.flat,.row:focus-visible .arrow.flat{ transform:translateX(8px); }
+
+  /* ---- ghost word ---- */
+  .ghost{
+    position:fixed; inset:0; z-index:2;
+    display:grid; place-items:center;
+    font-size:clamp(80px,21vw,300px); font-weight:800;
+    letter-spacing:-.03em; text-transform:uppercase; white-space:nowrap;
+    color:transparent; -webkit-text-stroke:2px var(--fg);
+    mix-blend-mode:difference;
+    opacity:0; transform:scale(.92);
+    transition:opacity .3s ease, transform .6s var(--ease);
+    pointer-events:none; user-select:none;
+  }
+  .ghost.on{ opacity:.95; transform:scale(1); }
+
+  /* ---- custom cursor ---- */
+  .cur{
+    position:fixed; top:0; left:0; width:22px; height:22px;
+    border:1.5px solid var(--fg); border-radius:50%;
+    transform:translate(-50%,-50%);
+    mix-blend-mode:difference; pointer-events:none; z-index:10;
+    transition:width .25s var(--ease), height .25s var(--ease), background .25s ease, opacity .3s ease;
+    opacity:0;
+  }
+  .cur.live{ opacity:1; }
+  .cur.big{ width:64px; height:64px; background:var(--fg); }
+
+  @media (hover:hover) and (pointer:fine){
+    body,a{ cursor:none; }
+  }
+  @media (hover:none){
+    .ghost,.cur{ display:none; }
+  }
+
   /* ---- footer ---- */
   footer{
     margin-top:26px; padding-top:20px; border-top:2px solid var(--fg);
     display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px 24px;
     font-family:"SF Mono",ui-monospace,Menlo,monospace;
     font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--dim);
+    opacity:0; animation:appear .8s ease .95s forwards;
   }
   footer a{ color:var(--dim); text-decoration:none; }
   footer a:hover{ color:var(--fg); }
+
+  /* ---- reduced motion ---- */
+  @media (prefers-reduced-motion: reduce){
+    .name .line span{ transform:none; animation:none; }
+    .rule{ transform:none; animation:none; }
+    .row{ opacity:1; transform:none; animation:none; }
+    .marquee,footer{ opacity:1; animation:none; }
+    .mq{ animation:none; }
+    .mark{ animation:none; }
+    .ghost{ transition:none; }
+    .row,.row::before,.arrow,.cur{ transition:none; }
+  }
 </style>
 </head>
 <body>
+  <canvas id="bg" aria-hidden="true"></canvas>
+
   <header>
-    <div class="name">Aleix<br>Perdigó</div>
-    <div class="sub">
-      <span>AI Artist · Content Director</span>
-      <span>Goroka · Turbo2</span>
+    <div class="name">
+      <span class="line"><span>Aleix</span></span>
+      <span class="line"><span>Perdigó</span></span>
     </div>
+    <span class="mark" aria-hidden="true">*</span>
+    <span class="rule" aria-hidden="true"></span>
   </header>
 
+  <div class="marquee" aria-hidden="true">
+    <span class="mq" id="mq"></span>
+  </div>
+
   <nav>
-    <a class="row" href="https://aleixperdigo.github.io/ai-video-vanguard/" target="_blank" rel="noopener">
+    <a class="row" data-ghost="Repo" href="https://aleixperdigo.github.io/ai-video-references/" target="_blank" rel="noopener">
       <span class="idx">01</span>
       <span class="mid">
-        <span class="title">AI Video Vanguard</span>
-        <span class="url">aleixperdigo.github.io/ai-video-vanguard</span>
+        <span class="title">Repositorio de Vídeo IA</span>
+        <span class="url">aleixperdigo.github.io/ai-video-references</span>
       </span>
       <span class="arrow">↗</span>
     </a>
 
-    <a class="row" href="https://aleixperdigo.github.io/turbo2-price-matrix/" target="_blank" rel="noopener">
+    <a class="row" data-ghost="Matrix" href="https://aleixperdigo.github.io/turbo2-price-matrix/" target="_blank" rel="noopener">
       <span class="idx">02</span>
       <span class="mid">
         <span class="title">AI Video Price Matrix</span>
@@ -119,7 +230,7 @@
       <span class="arrow">↗</span>
     </a>
 
-    <a class="row" href="https://aleixperdigo.github.io/hamsterclick/" target="_blank" rel="noopener">
+    <a class="row" data-ghost="Hamuster" href="https://aleixperdigo.github.io/hamsterclick/" target="_blank" rel="noopener">
       <span class="idx">03</span>
       <span class="mid">
         <span class="title">HAMUSTER Clicker</span>
@@ -128,7 +239,7 @@
       <span class="arrow">↗</span>
     </a>
 
-    <a class="row" href="https://aleixperdigo.github.io/workflow-stack/" target="_blank" rel="noopener">
+    <a class="row" data-ghost="Stack" href="https://aleixperdigo.github.io/workflow-stack/" target="_blank" rel="noopener">
       <span class="idx">04</span>
       <span class="mid">
         <span class="title">Workflow Stack</span>
@@ -137,7 +248,7 @@
       <span class="arrow">↗</span>
     </a>
 
-    <a class="row" href="https://aleixperdigo.github.io/" target="_blank" rel="noopener">
+    <a class="row" data-ghost="Folio" href="https://aleixperdigo.github.io/" target="_blank" rel="noopener">
       <span class="idx">05</span>
       <span class="mid">
         <span class="title">Portfolio 2026</span>
@@ -146,19 +257,135 @@
       <span class="arrow">↗</span>
     </a>
 
-    <a class="row" href="ai-video-battle.html">
+    <a class="row" data-ghost="Battle" href="ai-video-battle.html">
       <span class="idx">06</span>
       <span class="mid">
         <span class="title">AI Video Battle</span>
         <span class="url">ai-video-battle.html<span class="tag">LOCAL</span></span>
       </span>
-      <span class="arrow">→</span>
+      <span class="arrow flat">→</span>
     </a>
   </nav>
+
+  <div class="ghost" id="ghost" aria-hidden="true"></div>
+  <div class="cur" id="cur" aria-hidden="true"></div>
 
   <footer>
     <span>© 2026 Aleix Perdigó</span>
     <a href="mailto:aleix.perdigo@goroka.tv">aleix.perdigo@goroka.tv</a>
   </footer>
+
+<script>
+(function(){
+  var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+  /* ---- marquee content (duplicated for seamless loop) ---- */
+  var seg = 'AI Artist · Content Director · Goroka · Turbo2 · Barcelona · ';
+  document.getElementById('mq').textContent = seg.repeat(8);
+
+  /* ---- dither field (isolated: a canvas failure must never kill the rest) ---- */
+  try {
+    var cv = document.getElementById('bg'), cx = cv.getContext('2d');
+    var CELL = finePointer ? 5 : 7;
+    var cols = 0, rows = 0, img = null;
+    var B = [0,8,2,10,12,4,14,6,3,11,1,9,15,7,13,5]; // bayer 4x4
+    var mx = -9999, my = -9999, tx = mx, ty = my, t = 0, raf = null;
+
+    var fit = function(){
+      cols = Math.max(1, Math.ceil(innerWidth / CELL));
+      rows = Math.max(1, Math.ceil(innerHeight / CELL));
+      cv.width = cols; cv.height = rows;
+      img = cx.createImageData(cols, rows);
+      var d = img.data;
+      for (var i = 3; i < d.length; i += 4) d[i] = 255;
+    };
+
+    var draw = function(){
+      var d = img.data, i = 0;
+      for (var y = 0; y < rows; y++){
+        var by = (y & 3) << 2;
+        var sy = Math.sin(y * .13 - t);
+        var cy = Math.cos(y * .031 + t * .22);
+        for (var x = 0; x < cols; x++){
+          var v = .012 + .045 * Math.sin(x * .11 + t * 1.7) * sy
+                       + .038 * Math.sin(x * .023 - t * .35) * cy;
+          var dx = x - mx, dy = y - my;
+          var dist = Math.sqrt(dx*dx + dy*dy);
+          if (dist < 30) v += (1 - dist / 30) * .58;
+          var c = (v > (B[by | (x & 3)] + .5) / 16) ? 255 : 5;
+          d[i] = d[i+1] = d[i+2] = c;
+          i += 4;
+        }
+      }
+      cx.putImageData(img, 0, 0);
+    };
+
+    var frame = function(){
+      // self-heal: refit if the viewport changed (covers 0-width init)
+      if (Math.ceil(innerWidth / CELL) !== cols || Math.ceil(innerHeight / CELL) !== rows) fit();
+      t += .016;
+      mx += (tx - mx) * .09;
+      my += (ty - my) * .09;
+      draw();
+      raf = requestAnimationFrame(frame);
+    };
+
+    addEventListener('resize', function(){ fit(); if (reduced) draw(); });
+    fit();
+
+    if (reduced){
+      draw(); // static single frame
+    } else {
+      raf = requestAnimationFrame(frame);
+      document.addEventListener('visibilitychange', function(){
+        if (document.hidden){ cancelAnimationFrame(raf); raf = null; }
+        else if (!raf){ raf = requestAnimationFrame(frame); }
+      });
+    }
+
+    addEventListener('pointermove', function(e){
+      tx = e.clientX / CELL; ty = e.clientY / CELL;
+    });
+    addEventListener('pointerleave', function(){ tx = -9999; ty = -9999; });
+  } catch(e) { /* dither is decorative; never block cursor/ghost */ }
+
+  /* ---- custom cursor ---- */
+  if (finePointer){
+    var cur = document.getElementById('cur');
+    var cx2 = -100, cy2 = -100, px = cx2, py = cy2;
+    addEventListener('pointermove', function(e){
+      cx2 = e.clientX; cy2 = e.clientY;
+      cur.classList.add('live');
+    });
+    if (reduced){
+      addEventListener('pointermove', function(e){
+        cur.style.transform = 'translate(' + e.clientX + 'px,' + e.clientY + 'px) translate(-50%,-50%)';
+      });
+    } else {
+      (function follow(){
+        px += (cx2 - px) * .22; py += (cy2 - py) * .22;
+        cur.style.transform = 'translate(' + px + 'px,' + py + 'px) translate(-50%,-50%)';
+        requestAnimationFrame(follow);
+      })();
+    }
+  }
+
+  /* ---- ghost word + cursor grow ---- */
+  var ghost = document.getElementById('ghost');
+  var curEl = document.getElementById('cur');
+  document.querySelectorAll('.row, footer a').forEach(function(el){
+    el.addEventListener('mouseenter', function(){
+      curEl.classList.add('big');
+      var g = el.getAttribute('data-ghost');
+      if (g){ ghost.textContent = g; ghost.classList.add('on'); }
+    });
+    el.addEventListener('mouseleave', function(){
+      curEl.classList.remove('big');
+      ghost.classList.remove('on');
+    });
+  });
+})();
+</script>
 </body>
 </html>

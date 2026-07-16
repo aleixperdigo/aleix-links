@@ -138,20 +138,6 @@
   .row:hover .arrow,.row:focus-visible .arrow{ transform:translate(8px,-4px); }
   .row:hover .arrow.flat,.row:focus-visible .arrow.flat{ transform:translateX(8px); }
 
-  /* ---- ghost word ---- */
-  .ghost{
-    position:fixed; inset:0; z-index:2;
-    display:grid; place-items:center;
-    font-size:clamp(80px,21vw,300px); font-weight:800;
-    letter-spacing:-.03em; text-transform:uppercase; white-space:nowrap;
-    color:transparent; -webkit-text-stroke:2px var(--fg);
-    mix-blend-mode:difference;
-    opacity:0; transform:scale(.92);
-    transition:opacity .3s ease, transform .6s var(--ease);
-    pointer-events:none; user-select:none;
-  }
-  .ghost.on{ opacity:.95; transform:scale(1); }
-
   /* ---- custom cursor ---- */
   .cur{
     position:fixed; top:0; left:0; width:22px; height:22px;
@@ -168,7 +154,7 @@
     body,a{ cursor:none; }
   }
   @media (hover:none){
-    .ghost,.cur{ display:none; }
+    .cur{ display:none; }
   }
 
   /* ---- footer ---- */
@@ -190,7 +176,6 @@
     .marquee,footer{ opacity:1; animation:none; }
     .mq{ animation:none; }
     .mark{ animation:none; }
-    .ghost{ transition:none; }
     .row,.row::before,.arrow,.cur{ transition:none; }
   }
 </style>
@@ -212,7 +197,7 @@
   </div>
 
   <nav>
-    <a class="row" data-ghost="Repo" href="https://aleixperdigo.github.io/ai-video-references/" target="_blank" rel="noopener">
+    <a class="row" href="https://aleixperdigo.github.io/ai-video-references/" target="_blank" rel="noopener">
       <span class="idx">01</span>
       <span class="mid">
         <span class="title">Repositorio de Vídeo IA</span>
@@ -221,7 +206,7 @@
       <span class="arrow">↗</span>
     </a>
 
-    <a class="row" data-ghost="Matrix" href="https://aleixperdigo.github.io/turbo2-price-matrix/" target="_blank" rel="noopener">
+    <a class="row" href="https://aleixperdigo.github.io/turbo2-price-matrix/" target="_blank" rel="noopener">
       <span class="idx">02</span>
       <span class="mid">
         <span class="title">AI Video Price Matrix</span>
@@ -230,7 +215,7 @@
       <span class="arrow">↗</span>
     </a>
 
-    <a class="row" data-ghost="Hamuster" href="https://aleixperdigo.github.io/hamsterclick/" target="_blank" rel="noopener">
+    <a class="row" href="https://aleixperdigo.github.io/hamsterclick/" target="_blank" rel="noopener">
       <span class="idx">03</span>
       <span class="mid">
         <span class="title">HAMUSTER Clicker</span>
@@ -239,7 +224,7 @@
       <span class="arrow">↗</span>
     </a>
 
-    <a class="row" data-ghost="Stack" href="https://aleixperdigo.github.io/workflow-stack/" target="_blank" rel="noopener">
+    <a class="row" href="https://aleixperdigo.github.io/workflow-stack/" target="_blank" rel="noopener">
       <span class="idx">04</span>
       <span class="mid">
         <span class="title">Workflow Stack</span>
@@ -248,7 +233,7 @@
       <span class="arrow">↗</span>
     </a>
 
-    <a class="row" data-ghost="Folio" href="https://aleixperdigo.github.io/" target="_blank" rel="noopener">
+    <a class="row" href="https://aleixperdigo.github.io/" target="_blank" rel="noopener">
       <span class="idx">05</span>
       <span class="mid">
         <span class="title">Portfolio 2026</span>
@@ -257,7 +242,7 @@
       <span class="arrow">↗</span>
     </a>
 
-    <a class="row" data-ghost="Battle" href="ai-video-battle.html">
+    <a class="row" href="ai-video-battle.html">
       <span class="idx">06</span>
       <span class="mid">
         <span class="title">AI Video Battle</span>
@@ -267,7 +252,6 @@
     </a>
   </nav>
 
-  <div class="ghost" id="ghost" aria-hidden="true"></div>
   <div class="cur" id="cur" aria-hidden="true"></div>
 
   <footer>
@@ -348,7 +332,7 @@
       tx = e.clientX / CELL; ty = e.clientY / CELL;
     });
     addEventListener('pointerleave', function(){ tx = -9999; ty = -9999; });
-  } catch(e) { /* dither is decorative; never block cursor/ghost */ }
+  } catch(e) { /* dither is decorative; never block the cursor */ }
 
   /* ---- custom cursor ---- */
   if (finePointer){
@@ -371,19 +355,11 @@
     }
   }
 
-  /* ---- ghost word + cursor grow ---- */
-  var ghost = document.getElementById('ghost');
+  /* ---- cursor grow on links ---- */
   var curEl = document.getElementById('cur');
   document.querySelectorAll('.row, footer a').forEach(function(el){
-    el.addEventListener('mouseenter', function(){
-      curEl.classList.add('big');
-      var g = el.getAttribute('data-ghost');
-      if (g){ ghost.textContent = g; ghost.classList.add('on'); }
-    });
-    el.addEventListener('mouseleave', function(){
-      curEl.classList.remove('big');
-      ghost.classList.remove('on');
-    });
+    el.addEventListener('mouseenter', function(){ curEl.classList.add('big'); });
+    el.addEventListener('mouseleave', function(){ curEl.classList.remove('big'); });
   });
 })();
 </script>
